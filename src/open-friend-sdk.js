@@ -39,6 +39,7 @@ export const getUserKeyAndContentKey = async () => {
   const { web3, account } = await LitJsSdk.connectWeb3();
 
   let openFriendKeys = localStorage.getItem("open-friend-keys");
+  console.log("got openFriendKeys from localStorage", openFriendKeys);
   if (openFriendKeys) {
     openFriendKeys = importOpenFriendKeys(openFriendKeys);
     // make sure the account selected in metamask is the same as the account in the signature

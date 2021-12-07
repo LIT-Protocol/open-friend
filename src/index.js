@@ -4,6 +4,13 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Theme, presetGpnDefault } from "@consta/uikit/Theme";
+import LitJsSdk from "lit-js-sdk";
+
+window.litNodeClient = new LitJsSdk.LitNodeClient({
+  alertWhenUnauthorized: false,
+});
+window.litNodeClient.connect();
+window.LitJsSdk = LitJsSdk;
 
 ReactDOM.render(
   <React.StrictMode>

@@ -1,70 +1,44 @@
-# Getting Started with Create React App
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- [Open Friend](#open-friend)
+  - [What is Open Friend?](#what-is-open-friend)
+  - [Security](#security)
+  - [Key Transmission and Friend Requests](#key-transmission-and-friend-requests)
+  - [Key Derivation](#key-derivation)
+    - [Creating a Friend Request](#creating-a-friend-request)
 
-## Available Scripts
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-In the project directory, you can run:
+# Open Friend
 
-### `yarn start`
+The philosophy of Open Friend is that the most important part of social media is our own personal social graphs. Your "friend list" on Facebook, your "connections" on LinkedIn, your "mutuals" on Twitter. Open Friend is an attempt to make your social graph portable, private, and secure.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## What is Open Friend?
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Open Friend is a key exchange protocol, modeled after the idea of a "friend request". A friend request from Alice to Bob consists of Alice's symmetric encryption key, public key, and a signature. The symmetric encryption key is used to encrypt Alice's posts or content on a social network. The public key is used to authenticate Alice's posts, which are signed with the corresponding private key. The signature is used to prevent a malicious user from impersonating Alice.
 
-### `yarn test`
+If Bob chooses to accept Alice's friend request, then Bob stores Alice's keys, and uses them to decrypt Alice's posts and content.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Security
 
-### `yarn build`
+All encryption and decryption happens client side, ensuring that only authorized users can see posts and content. This also permits using standard web2 infrastructure to host and serve Open Friend applications, which is inexpensive and scales well.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Key Transmission and Friend Requests
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+A user may transmit their keys via a "friend request" to another user. The transport method for these keys is flexible. For example, you could simply email them to a user. For our implementation, we ask the user sending the friend request to enter the ETH wallet address of the receiving user. We then use the Lit Protocol to encrypt the friend request on the client side to the receiving user's ETH wallet address, ensuring that only the intented user can decrypt the friend request.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Key Derivation
 
-### `yarn eject`
+All keys are derived deterministically from a signature created by the user's crypto wallet (metamask, etc). This means that a user can always re-derive their Open Friend keys as long as they don't lose their crypto wallet keys.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+There are three components sent in a friend request:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- The content key, which is a symmetric encryption key used to encrypt the content of posts by the user.
+- The signing key, which is used to sign and authenticate the user's posts.
+- The wallet signature, which is a signature of the content key and signing key, signed by the user's ETH wallet. This proves ownership of the ETH wallet by the user who created the friend request.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Creating a Friend Request
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+To create a friend request, use the `getUserKeyAndContentKey` function in open-friend-sdk.js to obtain your content key and signing key. Then use the `createFriendRequest` function to create the friend request. You should then encrypt the friend request to the receiving user's ETH wallet address using the Lit Protocol. An example of this complete process can be found in src/App.js in the `handleSendFriendRequest` function.
