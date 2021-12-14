@@ -1,6 +1,5 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Open Friend](#open-friend)
   - [What is Open Friend?](#what-is-open-friend)
@@ -8,6 +7,7 @@
   - [Key Transmission and Friend Requests](#key-transmission-and-friend-requests)
   - [Key Derivation](#key-derivation)
     - [Creating a Friend Request](#creating-a-friend-request)
+  - [Sending a friend request to a group](#sending-a-friend-request-to-a-group)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -42,3 +42,7 @@ There are three components sent in a friend request:
 ### Creating a Friend Request
 
 To create a friend request, use the `getUserKeyAndContentKey` function in open-friend-sdk.js to obtain your content key and signing key. Then use the `createFriendRequest` function to create the friend request. You should then encrypt the friend request to the receiving user's ETH wallet address using the Lit Protocol. An example of this complete process can be found in src/App.js in the `handleSendFriendRequest` function.
+
+## Sending a friend request to a group
+
+Groups like DAOs are already represented on chain, so what if you wanted to send a friend request to a group? When creating a friend request, instead of specifying a wallet address of the user who will receive the request (and therefore be able to decrypt your posts), you specify the Lit Access Control Conditions under which the group is able to decrypt your posts. For example, if the access control condition is that the user must be a member of the FWB DAO, then any member of the FWB DAO can decrypt your posts.
