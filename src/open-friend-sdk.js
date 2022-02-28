@@ -79,17 +79,18 @@ const deriveKeys = async () => {
   // console.log("symmKey", symmKey);
 
   // sign the signing public key with the eth wallet private key
+  const signedSigningKeyBody = `My public signing key is ${uint8arrayToString(
+    signingKey.publicKey,
+    "base16"
+  )}`;
   const signedSigningKey = await signMessage({
-    body: `My public signing key is ${uint8arrayToString(
-      signingKey.publicKey,
-      "base16"
-    )}`,
+    body: signedSigningKeyBody,
   });
 
   const walletSig = {
     sig: signedSigningKey.signature,
     derivedVia: "web3.eth.personal.sign",
-    signedMessage: body,
+    signedMessage: signedSigningKeyBody,
     address: signedSigningKey.address,
   };
 
@@ -136,7 +137,13 @@ const signMessage = async ({ body }) => {
   const { web3, account } = await LitJsSdk.connectWeb3();
 
   console.log("signing with ", account);
-  const signature = await web3.getSigner().signMessage(body);
+  console.log("meow");
+  const signature = await LitJsSdk.signMessageAsync(
+    web3.getSigner(),
+    account,
+    body
+  );
+  // const signature = await web3.getSigner().signMessage(body);
   //.request({ method: 'personal_sign', params: [account, body] })
   const address = verifyMessage(body, signature).toLowerCase();
 

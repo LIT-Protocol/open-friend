@@ -19,6 +19,7 @@ function App() {
   const handleSendFriendRequest = async () => {
     const openFriendKeys = await getUserKeyAndContentKey();
     const authSig = openFriendKeys.walletSig;
+    console.log("using authSig", authSig);
     // sign the friend request and send it
     const friendRequest = await createFriendRequest({
       openFriendKeys,
